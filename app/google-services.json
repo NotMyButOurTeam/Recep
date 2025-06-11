@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "325950236366",
+    "project_id": "recep-455b0",
+    "storage_bucket": "recep-455b0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325950236366:android:c69eec7fa82d4cc43b129f",
+        "android_client_info": {
+          "package_name": "com.recep.recep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA09mmufpvLEMwUOUSTEIaP4yEmuiNgwok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
