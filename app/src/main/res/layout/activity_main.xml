@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView2"
+            android:id="@+id/fragmentContainerView"
             android:name="com.recep.recep.HomeFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
