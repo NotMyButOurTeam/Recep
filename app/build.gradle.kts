@@ -47,5 +47,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+    implementation(platform(libs.firebase.bom))
+
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }

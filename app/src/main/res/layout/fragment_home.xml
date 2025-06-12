@@ -58,19 +58,20 @@
             android:orientation="horizontal">
 
             <Space
-                android:layout_width="32dp"
+                android:layout_width="16dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="8">
+                android:layout_weight="8"
+                tools:listitem="@layout/item_cell_recipe">
 
             </androidx.recyclerview.widget.RecyclerView>
 
             <Space
-                android:layout_width="32dp"
+                android:layout_width="16dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
