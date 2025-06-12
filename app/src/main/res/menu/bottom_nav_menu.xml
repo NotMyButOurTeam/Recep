@@ -6,7 +6,7 @@
         android:title="@string/menu_home_title" />
     <item
         android:id="@+id/bookmark"
-        android:enabled="false"
+        android:enabled="true"
         android:icon="@drawable/bookmark"
         android:title="@string/menu_bookmark_title" />
 </menu>

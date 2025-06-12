@@ -17,14 +17,16 @@
             android:name="com.recep.recep.HomeFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
+            android:layout_weight="10"
             tools:layout="@layout/fragment_home" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="72dp"
             android:layout_gravity="bottom"
-            android:layout_weight="1"
+            android:layout_weight="0"
+            app:elevation="12dp"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
