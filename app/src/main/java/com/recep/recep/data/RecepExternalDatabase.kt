@@ -23,25 +23,25 @@ object RecepExternalDatabase {
             "ingredients" to recipe.ingredients,
             "equipments" to recipe.equipments,
             "directions" to recipe.directions,
-            "previewURL" to recipe.previewURL
+            "imageExtension" to recipe.imageExtension
         )
 
         return db.collection("recipes")
             .add(recipeMap)
     }
 
-    fun updateRecipe(uid: String, recipe: Recipe) {
+    fun updateRecipe(recipe: Recipe) {
         val recipeMap = hashMapOf(
             "name" to recipe.name,
             "description" to recipe.description,
             "ingredients" to recipe.ingredients,
             "equipments" to recipe.equipments,
             "directions" to recipe.directions,
-            "previewURL" to recipe.previewURL
+            "imageExtension" to recipe.imageExtension
         )
 
         db.collection("recipes")
-            .document(uid)
+            .document(recipe.uid)
             .set(recipeMap)
     }
 }

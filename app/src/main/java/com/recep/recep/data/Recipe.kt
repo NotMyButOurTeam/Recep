@@ -5,10 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Recipe(
+    val uid: String,
     val name: String,
     val description: String,
     val ingredients: String,
     val equipments: String,
     val directions: String,
-    val previewURL: String,
+    val imageExtension: String,
 ) : Parcelable

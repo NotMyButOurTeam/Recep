@@ -26,17 +26,24 @@ class HomeFragment : Fragment() {
             if (result != null) {
                 var recipesList = ArrayList<Recipe>()
 
+                var i = 0
+                val maxRecipes = 8
                 for (document in result) {
+                    if (i >= maxRecipes)
+                        break
+
                     val recipe = Recipe(
+                        document.id,
                         document.data["name"].toString(),
                         document.data["description"].toString(),
                         document.data["ingredients"].toString(),
                         document.data["equipments"].toString(),
                         document.data["directions"].toString(),
-                        document.data["previewURL"].toString(),
+                        document.data["imageExtension"].toString(),
                     )
 
                     recipesList.add(recipe)
+                    i++
                 }
 
                 if (isAdded) {

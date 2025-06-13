@@ -10,7 +10,7 @@ object RecepStorage {
     private val storage: FirebaseStorage
         get() = Firebase.storage
 
-    fun downloadRecipePreview(name: String): Task<Uri> {
-        return storage.getReference("recipes_preview/$name").downloadUrl
+    fun downloadRecipePreview(recipe: Recipe): Task<Uri> {
+        return storage.getReference("recipes_preview/${recipe.uid}.${recipe.imageExtension}").downloadUrl
     }
 }
