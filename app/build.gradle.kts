@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
 
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -29,6 +30,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

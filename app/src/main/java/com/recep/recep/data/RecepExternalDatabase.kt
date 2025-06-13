@@ -7,15 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.firestore
 
-data class Recipe(
-    val name: String,
-    val description: String,
-    val ingredients: String,
-    val equipments: String,
-    val directions: String
-)
-
-object RecipesExternalDatabase {
+object RecepExternalDatabase {
     private val db: FirebaseFirestore
         get() = Firebase.firestore
 
@@ -30,7 +22,8 @@ object RecipesExternalDatabase {
             "description" to recipe.description,
             "ingredients" to recipe.ingredients,
             "equipments" to recipe.equipments,
-            "directions" to recipe.directions
+            "directions" to recipe.directions,
+            "previewURL" to recipe.previewURL
         )
 
         return db.collection("recipes")
@@ -43,7 +36,8 @@ object RecipesExternalDatabase {
             "description" to recipe.description,
             "ingredients" to recipe.ingredients,
             "equipments" to recipe.equipments,
-            "directions" to recipe.directions
+            "directions" to recipe.directions,
+            "previewURL" to recipe.previewURL
         )
 
         db.collection("recipes")
