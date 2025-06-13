@@ -23,12 +23,14 @@ class MainActivity : AppCompatActivity() {
 
         var homeFragment = HomeFragment()
         var bookmarkFragment = BookmarkFragment()
+        var addRecipeFragment = AddRecipeFragment()
 
         setFragment(homeFragment)
         bottomNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> setFragment(homeFragment)
                 R.id.bookmark -> setFragment(bookmarkFragment)
+                R.id.add -> setFragment(addRecipeFragment)
             }
             true
         }
