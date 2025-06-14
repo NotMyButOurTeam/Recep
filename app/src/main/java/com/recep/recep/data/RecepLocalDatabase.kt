@@ -55,4 +55,24 @@ class RecepLocalDatabase {
             db.recipeDao().setRecipePreviewURL(uid, previewURL)
         }
     }
+
+    fun updateRecipe(uid: String, recipe: Recipe) {
+        val list = db.recipeDao().getRecipesByUid(uid)
+        if (list.isNotEmpty()) {
+            val updatedId = list[0]
+            val updatedEntity = RecipeEntity(
+                id = updatedId,
+                uid = recipe.uid,
+                name = recipe.name,
+                description = recipe.description,
+                ingredients = recipe.ingredients,
+                equipments = recipe.equipments,
+                directions = recipe.directions,
+                imageExtension = recipe.imageExtension,
+                previewURL = recipe.previewURL,
+            )
+
+            db.recipeDao().updateRecipe(updatedEntity)
+        }
+    }
 }

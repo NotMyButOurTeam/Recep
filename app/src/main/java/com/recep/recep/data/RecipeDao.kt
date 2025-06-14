@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface RecipeDao {
@@ -21,4 +22,7 @@ interface RecipeDao {
 
     @Query("UPDATE Recipe SET previewURL = :previewURL WHERE uid = :uid")
     fun setRecipePreviewURL(uid: String, previewURL: String)
+
+    @Update
+    fun updateRecipe(entity: RecipeEntity)
 }
