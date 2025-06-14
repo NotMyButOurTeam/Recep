@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setRecipesListContent(recipesList: ArrayList<Recipe>) {
-        val recipeItemAdapter = RecipeItemAdapter(recipesList, lifecycleScope)
+        val recipeItemAdapter = RecipeItemAdapter(recipesList)
 
         val screenWidthDp = resources.configuration.screenWidthDp
         val itemWidthDp = 386

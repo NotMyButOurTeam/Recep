@@ -14,7 +14,7 @@ import com.recep.recep.RecepUtils
 import com.recep.recep.RecipeViewActivity
 import kotlinx.coroutines.CoroutineScope
 
-class RecipeItemAdapter(private val listRecipes: ArrayList<Recipe>, scope: CoroutineScope) : RecyclerView.Adapter<RecipeItemAdapter.ListViewHolder>() {
+class RecipeItemAdapter(private val listRecipes: ArrayList<Recipe>) : RecyclerView.Adapter<RecipeItemAdapter.ListViewHolder>() {
     class ListViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
         var recipeName: TextView = itemView.findViewById<TextView>(R.id.recipeTitle)
         var recipeImage: ImageView = itemView.findViewById<ImageView>(R.id.recipeImage)
