@@ -37,7 +37,7 @@ class RecipeItemAdapter(private val listRecipes: ArrayList<Recipe>, scope: Corou
         holder: ListViewHolder,
         position: Int
     ) {
-        val recipe = listRecipes[position]
+        var recipe = listRecipes[position]
 
         holder.recipeName.text = recipe.name
 
@@ -51,6 +51,7 @@ class RecipeItemAdapter(private val listRecipes: ArrayList<Recipe>, scope: Corou
 
                     val localDb = RecepLocalDatabase(holder.itemView.context)
                     localDb.updateRecipePreviewURL(recipe.uid, url.toString())
+                    recipe.previewURL = url.toString()
                 }
         } else {
             Glide.with(holder.itemView.context)

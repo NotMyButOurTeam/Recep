@@ -12,5 +12,5 @@ data class Recipe(
     val equipments: String,
     val directions: String,
     val imageExtension: String,
-    val previewURL: String
+    var previewURL: String
 ) : Parcelable
