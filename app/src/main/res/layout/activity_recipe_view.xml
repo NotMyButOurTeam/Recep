@@ -62,7 +62,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:paddingTop="4dp"
                         android:src="@drawable/edit" />
 
                     <Space
