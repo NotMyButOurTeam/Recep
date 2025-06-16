@@ -126,12 +126,17 @@
                 android:layout_height="match_parent"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="12dp"
+                android:paddingBottom="64dp"
                 tools:listitem="@layout/item_recipe_list" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layoutDirection="rtl"
+        app:menu="@menu/bottom_view_bar"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
