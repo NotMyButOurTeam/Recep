@@ -58,7 +58,7 @@
                 android:layout_height="6dp" />
 
             <EditText
-                android:id="@+id/editTextTextMultiLine"
+                android:id="@+id/recipeAddDescription"
                 android:layout_width="match_parent"
                 android:layout_height="196dp"
                 android:autofillHints=""
@@ -87,6 +87,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recipeAddIngredients"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:listitem="@layout/item_cell_new_item" />
@@ -130,6 +131,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recipeAddEquipments"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:listitem="@layout/item_cell_new_item" />
@@ -173,6 +175,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recipeAddDirections"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:listitem="@layout/item_cell_new_item" />
