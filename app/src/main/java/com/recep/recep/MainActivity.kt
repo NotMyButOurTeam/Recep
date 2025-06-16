@@ -5,10 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.recep.recep.data.Recipe
+import com.recep.recep.database.Database
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Database.initLocal(this)
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -17,6 +22,48 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val homeFragment = HomeFragment()
+        val bookmarksFragment = BookmarksFragment()
+
+        setCurrentFragment(homeFragment)
+
+        // Hilangin title app yang ntah kenapa muncul di aplikasi
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.mainBottomNavView)
+        bottomNavView.background = null
+        bottomNavView.setOnItemSelectedListener { item ->
+            val homeItem = bottomNavView.menu.findItem(R.id.bottom_menu_item_home)
+            val bookmarksItem = bottomNavView.menu.findItem(R.id.bottom_menu_item_bookmarks)
+
+            when (item.itemId) {
+                R.id.bottom_menu_item_home -> {
+                    homeItem?.setIcon(R.drawable.ic_home_fill)
+                    bookmarksItem?.setIcon(R.drawable.ic_bookmarks_outline)
+
+                    setCurrentFragment(homeFragment)
+                    true
+                }
+
+                R.id.bottom_menu_item_bookmarks -> {
+                    homeItem?.setIcon(R.drawable.ic_home_outline)
+                    bookmarksItem?.setIcon(R.drawable.ic_bookmarks_fill)
+
+                    setCurrentFragment(bookmarksFragment)
+                    true
+                }
+
+                else -> true
+            }
+        }
+    }
+
+    private fun setCurrentFragment(fragment: androidx.fragment.app.Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.mainFragmentView, fragment)
+            commit()
         }
     }
 }
