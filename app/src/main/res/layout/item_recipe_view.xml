@@ -2,21 +2,21 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardElevation="4dp"
+    android:id="@+id/itemRecipeView"
     android:layout_width="386dp"
     android:layout_height="256dp"
     android:layout_marginStart="4dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    app:cardCornerRadius="12dp">
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
     <ImageView
         android:id="@+id/itemRecipeViewImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
         android:scaleType="centerCrop"
         tools:srcCompat="@color/md_theme_inverseSurface" />
 
@@ -38,7 +38,7 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
