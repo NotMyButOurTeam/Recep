@@ -47,8 +47,4 @@ class RecipeViewAdapter(val listItem: List<Recipe>): RecyclerView.Adapter<Recipe
     }
 
     override fun getItemCount(): Int = listItem.size
-
-    fun refereshDataset() {
-        notifyDataSetChanged()
-    }
 }
