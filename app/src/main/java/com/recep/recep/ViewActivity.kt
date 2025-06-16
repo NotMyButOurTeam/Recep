@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.recep.recep.data.Recipe
 import com.recep.recep.database.Database
 import com.recep.recep.recycler.RecipeListAdapter
@@ -33,6 +34,7 @@ class ViewActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.viewToolbar)
         val image = findViewById<ImageView>(R.id.viewImage)
         val description = findViewById<TextView>(R.id.viewDescription)
+        val bottomAppBar = findViewById<BottomAppBar>(R.id.viewBottomAppBar)
 
         toolbar.title = recipe?.name
         recipe?.previewURL?.length?.let {
@@ -60,6 +62,28 @@ class ViewActivity : AppCompatActivity() {
 
         val directionList = recipe.directions.split("\n")
         fillList(R.id.viewDirectionList, directionList)
+
+        val bookmarkItem = bottomAppBar.menu.findItem(R.id.bottom_menu_item_bookmark)
+        var bookmarkChecked = false
+
+        bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.bottom_menu_item_bookmark -> {
+                    bookmarkChecked = !bookmarkChecked
+                    if (bookmarkChecked) {
+                        bookmarkItem.setIcon(R.drawable.ic_bookmark_fill)
+                    } else {
+                        bookmarkItem.setIcon(R.drawable.ic_bookmark_outline)
+                    }
+                    true
+                }
+
+                R.id.bottom_menu_item_edit -> {
+                    true
+                }
+                else -> true
+            }
+        }
     }
 
     private fun fillList(id: Int, list: List<String>) {
