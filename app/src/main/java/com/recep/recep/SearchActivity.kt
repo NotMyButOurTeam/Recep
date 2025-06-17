@@ -1,12 +1,19 @@
 package com.recep.recep
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
+import com.google.android.material.textview.MaterialTextView
+import com.recep.recep.database.Database
+import com.recep.recep.recycler.RecipeViewAdapter
 
 class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +30,14 @@ class SearchActivity : AppCompatActivity() {
 
         val searchBar = findViewById<SearchBar>(R.id.searchSearchBar)
         val searchView = findViewById<SearchView>(R.id.searchSearchView)
+        val recipeList = findViewById<RecyclerView>(R.id.searchRecipeList)
+        val searchNotFound = findViewById<MaterialTextView>(R.id.searchNotFound)
+        val searchResult = findViewById<NestedScrollView>(R.id.searchResult)
+
+        val screenWidthDp = resources.configuration.screenWidthDp
+        val imageWidthDp = 368
+        val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
+        recipeList.layoutManager = GridLayoutManager(this, columnCount)
 
         searchBar.post {
             searchView.show()
@@ -31,6 +46,18 @@ class SearchActivity : AppCompatActivity() {
         searchView.editText.setOnEditorActionListener { _, _, _ ->
             searchBar.setText(searchView.text)
             searchView.hide()
+
+            Database.getRecipes(this, searchView.text.toString()) { list ->
+                if (list.isNotEmpty()) {
+                    recipeList.adapter = RecipeViewAdapter(list)
+                    searchNotFound.visibility = View.GONE
+                    searchResult.visibility = View.VISIBLE
+                } else {
+                    searchNotFound.visibility = View.VISIBLE
+                    searchResult.visibility = View.GONE
+                }
+            }
+
             false
         }
 

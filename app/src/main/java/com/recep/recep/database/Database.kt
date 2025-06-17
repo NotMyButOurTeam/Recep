@@ -38,7 +38,7 @@ object Database {
                                     directions = recipe.directions,
                                     previewURL = recipe.previewURL
                                 )
-                            } else if (id == null || id?.isEmpty() == true) {
+                            } else if (id == null) {
                                 val item = RecipeEntity(
                                     uid = recipe.uid,
                                     name = recipe.name,
@@ -65,6 +65,21 @@ object Database {
                         callback(list)
                     }
                 }
+            }
+        }
+    }
+
+    fun getRecipes(context: Context, keyword: String, callback: (List<Recipe>) -> Unit) {
+        DatabaseExternal.getRecipeCount { count ->
+            getRecipes(context, count.toLong()) { list ->
+                val mutableList = list.toMutableList()
+                for (item in list) {
+                    if (!item.name.contains(keyword)) {
+                        mutableList.remove(item)
+                    }
+                }
+
+                callback(mutableList.toList())
             }
         }
     }

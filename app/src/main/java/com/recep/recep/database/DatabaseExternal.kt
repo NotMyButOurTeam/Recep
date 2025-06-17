@@ -20,6 +20,7 @@ object DatabaseExternal {
 
     fun getRecipes(count: Long, callback: (List<Recipe>) -> Unit) {
         db.collection("recipes")
+            .orderBy("name")
             .limit(count)
             .get().addOnSuccessListener { result ->
                 var list = mutableListOf<Recipe>()
@@ -47,6 +48,13 @@ object DatabaseExternal {
                 .downloadUrl.addOnSuccessListener { uri ->
                     callback(uri.toString())
                 }
+        }
+    }
+
+    fun getRecipeCount(callback: (Int) -> Unit) {
+        db.collection("recipes").get().addOnSuccessListener { result ->
+            val count = result.size()
+            callback(count)
         }
     }
 

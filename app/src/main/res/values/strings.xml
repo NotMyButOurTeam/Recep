@@ -17,4 +17,5 @@
     <string name="app_refresh">Refresh</string>
     <string name="app_import">Import</string>
     <string name="app_export">Export</string>
+    <string name="app_zero_result">Recipe not found.</string>
 </resources>

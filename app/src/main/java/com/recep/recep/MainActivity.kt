@@ -8,8 +8,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.recep.recep.database.Database
+import com.recep.recep.utils.NetworkUtils
 
 class MainActivity : AppCompatActivity() {
     private lateinit var activeFragment: Fragment
@@ -44,9 +46,16 @@ class MainActivity : AppCompatActivity() {
 
         val floatingActionButton = findViewById<FloatingActionButton>(R.id.mainFloatingActionButton)
         floatingActionButton.setOnClickListener {
-            val publishIntent = Intent(this, PublishActivity::class.java)
+            if (NetworkUtils.isNetworkAvailable(this)) {
+                val publishIntent = Intent(this, PublishActivity::class.java)
 
-            startActivity(publishIntent)
+                startActivity(publishIntent)
+            } else {
+                MaterialAlertDialogBuilder(this)
+                    .setIcon(R.drawable.ic_error)
+                    .setTitle("No Internet.")
+                    .show()
+            }
         }
 
         val bottomNavView = findViewById<BottomNavigationView>(R.id.mainBottomNavView)
