@@ -41,11 +41,17 @@ class RecipeViewAdapter(val listItem: List<Recipe>): RecyclerView.Adapter<Recipe
         val item = listItem[position]
 
         holder.recipeName.text = item.name
-        Database.updatePreview(holder.itemView.context, item) { uri ->
+        if (item.previewURL.length < 5) {
+            Database.updatePreview(holder.itemView.context, item) { uri ->
+                Glide.with(holder.itemView.context)
+                    .load(uri)
+                    .into(holder.recipeImage)
+                item.previewURL = uri
+            }
+        } else {
             Glide.with(holder.itemView.context)
-                .load(uri)
+                .load(item.previewURL)
                 .into(holder.recipeImage)
-            item.previewURL = uri
         }
 
         holder.recipeView.setOnClickListener {

@@ -38,6 +38,10 @@ class ViewActivity : AppCompatActivity() {
         val description = findViewById<TextView>(R.id.viewDescription)
         val bottomAppBar = findViewById<BottomAppBar>(R.id.viewBottomAppBar)
 
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         toolbar.title = recipe?.name
         recipe?.previewURL?.length?.let {
             if (it < 5) {

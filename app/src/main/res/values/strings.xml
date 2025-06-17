@@ -15,4 +15,6 @@
     <string name="publish_add_equipment">Add equipment</string>
     <string name="publish_add_ingredient">Add ingredient</string>
     <string name="app_refresh">Refresh</string>
+    <string name="app_import">Import</string>
+    <string name="app_export">Export</string>
 </resources>

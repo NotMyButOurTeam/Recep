@@ -35,6 +35,7 @@
                 android:id="@+id/viewToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_arrow_back"
                 app:title="Nasi Goreng"
                 app:titleTextColor="@android:color/white" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>

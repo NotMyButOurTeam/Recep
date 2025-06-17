@@ -36,6 +36,12 @@ class HomeFragment : Fragment() {
         val recipeList = view.findViewById<RecyclerView>(R.id.homeRecipeList)
         val refreshButton = view.findViewById<MaterialButton>(R.id.homeRefresh)
 
+
+        val screenWidthDp = resources.configuration.screenWidthDp
+        val imageWidthDp = 368
+        val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
+        recipeList.layoutManager = GridLayoutManager(context, columnCount)
+
         loadContentToRecycler(recipeList)
         searchBar.setOnClickListener {
             val searchIntent = Intent(context, SearchActivity::class.java)
@@ -52,11 +58,6 @@ class HomeFragment : Fragment() {
         if (isAdded) {
             val context = requireContext()
             Database.getRecipes(context, 8) {  list ->
-                val screenWidthDp = resources.configuration.screenWidthDp
-                val imageWidthDp = 368
-                val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
-
-                recycler.layoutManager = GridLayoutManager(context, columnCount)
                 recycler.adapter = RecipeViewAdapter(list)
             }
         }

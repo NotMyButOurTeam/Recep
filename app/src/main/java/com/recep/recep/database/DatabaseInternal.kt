@@ -83,7 +83,7 @@ interface RecipeDao {
     @Query("SELECT isBookmarked FROM Recipe WHERE uid = :uid")
     suspend fun getIsBookmarked(uid: String): List<Boolean>
 
-    @Query("SELECT $RECIPE_ATTRIBUTES FROM Recipe WHERE isBookmarked = 1")
+    @Query("SELECT $RECIPE_ATTRIBUTES FROM Recipe WHERE isBookmarked = 1 ORDER BY name")
     suspend fun getBookmarkeds(): List<Recipe>
 
     companion object {
