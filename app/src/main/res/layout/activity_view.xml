@@ -89,6 +89,7 @@
                 tools:listitem="@layout/item_recipe_list" />
 
             <TextView
+                android:id="@+id/viewEquipmentTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="12dp"

@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.search.SearchBar
 import com.recep.recep.database.Database
@@ -33,7 +33,11 @@ class HomeFragment : Fragment() {
         if (isAdded) {
             val context = requireContext()
             Database.getRecipes(context, 8) {  list ->
-                recipeList.layoutManager = LinearLayoutManager(context)
+                val screenWidthDp = resources.configuration.screenWidthDp
+                val imageWidthDp = 368
+                val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
+
+                recipeList.layoutManager = GridLayoutManager(context, columnCount)
                 recipeList.adapter = RecipeViewAdapter(list)
             }
 

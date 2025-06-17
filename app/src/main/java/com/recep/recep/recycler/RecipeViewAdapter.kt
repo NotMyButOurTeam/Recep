@@ -6,11 +6,9 @@ import com.recep.recep.R
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.card.MaterialCardView
 import com.recep.recep.ViewActivity
 import com.recep.recep.data.Recipe
@@ -18,9 +16,9 @@ import com.recep.recep.database.Database
 
 class RecipeViewAdapter(val listItem: List<Recipe>): RecyclerView.Adapter<RecipeViewAdapter.ListViewHolder>() {
     class ListViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
-        val recipeView = itemView.findViewById<MaterialCardView>(R.id.itemRecipeView)
-        val recipeName = itemView.findViewById<TextView>(R.id.itemRecipeViewName)
-        val recipeImage = itemView.findViewById<ImageView>(R.id.itemRecipeViewImage)
+        val recipeView: MaterialCardView = itemView.findViewById<MaterialCardView>(R.id.itemRecipeView)
+        val recipeName: TextView = itemView.findViewById<TextView>(R.id.itemRecipeViewName)
+        val recipeImage: ImageView = itemView.findViewById<ImageView>(R.id.itemRecipeViewImage)
     }
 
     override fun onCreateViewHolder(

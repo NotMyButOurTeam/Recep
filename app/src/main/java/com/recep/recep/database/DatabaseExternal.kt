@@ -1,6 +1,9 @@
 package com.recep.recep.database
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.documentfile.provider.DocumentFile
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,6 +47,48 @@ object DatabaseExternal {
                 .downloadUrl.addOnSuccessListener { uri ->
                     callback(uri.toString())
                 }
+        }
+    }
+
+    fun putRecipe(recipe: Recipe, callback: (Recipe) -> Unit) {
+        val item = hashMapOf(
+            "name" to recipe.name,
+            "description" to recipe.description,
+            "ingredients" to recipe.ingredients,
+            "equipments" to recipe.equipments,
+            "directions" to recipe.directions,
+            "imageExtension" to ""
+        )
+
+        db.collection("recipes")
+            .add(item)
+            .addOnSuccessListener { document ->
+                callback(Recipe(
+                    uid = document.id,
+                    name = recipe.name,
+                    description = recipe.description,
+                    ingredients = recipe.ingredients,
+                    equipments = recipe.equipments,
+                    directions = recipe.directions,
+                    previewURL = ""
+                ))
+            }
+    }
+
+    fun setRecipePreview(context: Context, recipe: Recipe, uri: Uri) {
+        val extension = DocumentFile.fromSingleUri(context, uri)?.name?.substringAfterLast(".")
+        val filename = "${recipe.uid}.$extension"
+
+        val ref = storage.reference.child("recipes_preview/$filename")
+        ref.putFile(uri).addOnSuccessListener {
+            db.collection("recipes").document(recipe.uid).set(hashMapOf(
+                "name" to recipe.name,
+                "description" to recipe.description,
+                "ingredients" to recipe.ingredients,
+                "equipments" to recipe.equipments,
+                "directions" to recipe.directions,
+                "imageExtension" to extension
+            ))
         }
     }
 }

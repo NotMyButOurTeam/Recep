@@ -9,9 +9,11 @@
         app:showAsAction="always"/>
 
     <item
+        android:enabled="false"
         android:title=""/>
 
     <item
+        android:enabled="false"
         android:title=""/>
 
     <item

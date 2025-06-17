@@ -1,12 +1,13 @@
 package com.recep.recep
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.recep.recep.data.Recipe
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.recep.recep.database.Database
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         // Hilangin title app yang ntah kenapa muncul di aplikasi
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val floatingActionButton = findViewById<FloatingActionButton>(R.id.mainFloatingActionButton)
+        floatingActionButton.setOnClickListener {
+            val publishIntent = Intent(this, PublishActivity::class.java)
+
+            startActivity(publishIntent)
+        }
 
         val bottomNavView = findViewById<BottomNavigationView>(R.id.mainBottomNavView)
         bottomNavView.background = null

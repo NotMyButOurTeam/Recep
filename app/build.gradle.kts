@@ -65,5 +65,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
     ksp(libs.glide.ksp)
 }

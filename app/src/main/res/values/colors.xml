@@ -1,4 +1,5 @@
 <resources>
+    <color name="md_theme_transparentBlack">#000000</color>
     <color name="md_theme_primary">#7F560F</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#FFDDB2</color>

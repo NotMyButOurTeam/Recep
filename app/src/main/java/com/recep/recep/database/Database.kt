@@ -1,6 +1,7 @@
 package com.recep.recep.database
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
@@ -87,7 +88,8 @@ object Database {
                     }
                 }
 
-                callback(uri)
+                if (uri.isNotEmpty())
+                    callback(uri)
             }
         } else if (db != null) {
             if (lifecycleOwner?.lifecycle != null) {
@@ -99,5 +101,13 @@ object Database {
                 }
             }
         }
+    }
+
+    fun uploadRecipe(recipe: Recipe, callback: (Recipe) -> Unit) {
+        DatabaseExternal.putRecipe(recipe, callback)
+    }
+
+    fun uploadRecipePreview(context: Context, recipe: Recipe, uri: Uri) {
+        DatabaseExternal.setRecipePreview(context, recipe, uri)
     }
 }

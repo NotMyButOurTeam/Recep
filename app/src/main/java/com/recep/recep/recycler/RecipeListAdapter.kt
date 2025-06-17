@@ -9,8 +9,8 @@ import com.recep.recep.R
 
 class RecipeListAdapter(val listItem: List<String>): RecyclerView.Adapter<RecipeListAdapter.ListViewHolder>() {
     class ListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        var itemNumber = itemView.findViewById<TextView>(R.id.itemRecipeListNumber)
-        var itemContent = itemView.findViewById<TextView>(R.id.itemRecipeListContent)
+        var itemNumber: TextView = itemView.findViewById<TextView>(R.id.itemRecipeListNumber)
+        var itemContent: TextView = itemView.findViewById<TextView>(R.id.itemRecipeListContent)
     }
 
     override fun onCreateViewHolder(

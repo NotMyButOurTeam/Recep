@@ -1,6 +1,7 @@
 package com.recep.recep
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -54,13 +55,18 @@ class ViewActivity : AppCompatActivity() {
         }
         description.text = recipe?.description
 
-        val ingredientList = recipe?.ingredients?.split("\n") as List<String>
+        val ingredientList = recipe?.ingredients?.trim()?.split("\n") as List<String>
         fillList(R.id.viewIngredientList, ingredientList)
 
-        val equipmentList = recipe.equipments.split("\n")
-        fillList(R.id.viewEquipmentList, equipmentList)
+        val equipmentList = recipe.equipments.trim().split("\n")
+        if (recipe.equipments.isNotEmpty()) {
+            fillList(R.id.viewEquipmentList, equipmentList)
+        } else {
+            findViewById<TextView>(R.id.viewEquipmentTitle).visibility = View.GONE
+            findViewById<RecyclerView>(R.id.viewEquipmentList).visibility = View.GONE
+        }
 
-        val directionList = recipe.directions.split("\n")
+        val directionList = recipe.directions.trim().split("\n")
         fillList(R.id.viewDirectionList, directionList)
 
         val bookmarkItem = bottomAppBar.menu.findItem(R.id.bottom_menu_item_bookmark)
