@@ -1,5 +1,6 @@
 package com.recep.recep
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.recep.recep.data.Recipe
 import com.recep.recep.database.Database
@@ -31,9 +33,9 @@ class ViewActivity : AppCompatActivity() {
             insets
         }
 
-        val recipe = intent.getParcelableExtra<Recipe>("recipe")
+        var recipe = intent.getParcelableExtra<Recipe>("recipe")
 
-        val toolbar = findViewById<Toolbar>(R.id.viewToolbar)
+        val toolbar = findViewById<MaterialToolbar>(R.id.viewToolbar)
         val image = findViewById<ImageView>(R.id.viewImage)
         val description = findViewById<TextView>(R.id.viewDescription)
         val bottomAppBar = findViewById<BottomAppBar>(R.id.viewBottomAppBar)
@@ -42,8 +44,53 @@ class ViewActivity : AppCompatActivity() {
             finish()
         }
 
-        toolbar.title = recipe?.name
-        recipe?.previewURL?.length?.let {
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.top_view_menu_item_refresh -> {
+                    recipe?.let {
+                        Database.getRecipe(this, it.uid) { result ->
+                            recipe = result
+                            loadContentToPage(recipe, toolbar, description,
+                                image, bottomAppBar)
+                        }
+                    }
+                }
+            }
+            true
+        }
+
+        if (recipe != null) {
+            loadContentToPage(recipe, toolbar, description, image, bottomAppBar)
+
+            val bookmarkItem = bottomAppBar.menu.findItem(R.id.bottom_menu_item_bookmark)
+            bottomAppBar.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.bottom_menu_item_bookmark -> {
+                        recipe.isBookmarked = !recipe.isBookmarked
+                        updateBookmarkStatus(bookmarkItem, recipe.isBookmarked)
+                        Database.setBookmarkStatus(this, recipe, recipe.isBookmarked)
+                    }
+
+                    R.id.bottom_menu_item_edit -> {
+                        val editIntent = Intent(this, PublishActivity::class.java).apply {
+                            putExtra("recipe", recipe)
+                        }
+
+                        startActivity(editIntent)
+                    }
+                }
+                true
+            }
+        } else finish()
+    }
+
+    private fun loadContentToPage(recipe: Recipe,
+                                  toolbar: MaterialToolbar,
+                                  description: TextView,
+                                  image: ImageView,
+                                  bottomAppBar: BottomAppBar) {
+        toolbar.title = recipe.name
+        recipe.previewURL.length.let {
             if (it < 5) {
                 Database.updatePreview(this, recipe) { uri ->
                     recipe.previewURL = uri
@@ -58,9 +105,9 @@ class ViewActivity : AppCompatActivity() {
                     .into(image)
             }
         }
-        description.text = recipe?.description
+        description.text = recipe.description
 
-        val ingredientList = recipe?.ingredients?.trim()?.split("\n") as List<String>
+        val ingredientList = recipe.ingredients.trim().split("\n")
         fillList(R.id.viewIngredientList, ingredientList)
 
         val equipmentList = recipe.equipments.trim().split("\n")
@@ -78,20 +125,6 @@ class ViewActivity : AppCompatActivity() {
         Database.getBookmarkStatus(this, recipe) { isBookmarked ->
             recipe.isBookmarked = isBookmarked
             updateBookmarkStatus(bookmarkItem, recipe.isBookmarked)
-        }
-
-        bottomAppBar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.bottom_menu_item_bookmark -> {
-                    recipe.isBookmarked = !recipe.isBookmarked
-                    updateBookmarkStatus(bookmarkItem, recipe.isBookmarked)
-                    Database.setBookmarkStatus(this, recipe, recipe.isBookmarked)
-                }
-
-                R.id.bottom_menu_item_edit -> {
-                }
-            }
-            true
         }
     }
 

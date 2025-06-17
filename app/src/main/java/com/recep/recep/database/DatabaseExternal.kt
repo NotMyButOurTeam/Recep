@@ -18,6 +18,26 @@ object DatabaseExternal {
     private val storage: FirebaseStorage
         get() = Firebase.storage
 
+    fun getRecipe(uid: String, callback: (Recipe) -> Unit) {
+        db.collection("recipes")
+            .document(uid)
+            .get().addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    val recipe = Recipe(
+                        uid = document.id,
+                        name = document.data?.get("name").toString(),
+                        description = document.data?.get("description").toString(),
+                        ingredients = document.data?.get("ingredients").toString(),
+                        equipments = document.data?.get("equipments").toString(),
+                        directions = document.data?.get("directions").toString(),
+                        previewURL = document.data?.get("imageExtension").toString()
+                    )
+
+                    callback(recipe)
+                }
+            }
+    }
+
     fun getRecipes(count: Long, callback: (List<Recipe>) -> Unit) {
         db.collection("recipes")
             .orderBy("name")
@@ -25,7 +45,7 @@ object DatabaseExternal {
             .get().addOnSuccessListener { result ->
                 var list = mutableListOf<Recipe>()
                 for (document in result) {
-                    var recipe = Recipe(
+                    val recipe = Recipe(
                         uid = document.id,
                         name = document.data["name"].toString(),
                         description = document.data["description"].toString(),
@@ -98,5 +118,21 @@ object DatabaseExternal {
                 "imageExtension" to extension
             ))
         }
+    }
+
+    fun setRecipe(recipe: Recipe, callback: (Recipe) -> Unit) {
+        db.collection("recipes")
+            .document(recipe.uid)
+            .set(hashMapOf(
+                "name" to recipe.name,
+                "description" to recipe.description,
+                "description" to recipe.description,
+                "ingredients" to recipe.ingredients,
+                "equipments" to recipe.equipments,
+                "directions" to recipe.directions,
+                "imageExtension" to recipe.previewURL.substringAfterLast(".", "").substringBeforeLast("?", "")
+            )).addOnSuccessListener {
+                callback(recipe)
+            }
     }
 }

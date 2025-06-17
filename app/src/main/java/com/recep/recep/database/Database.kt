@@ -19,6 +19,54 @@ object Database {
         ).build()
     }
 
+    fun getRecipe(context: Context, uid: String, callback: (Recipe) -> Unit) {
+        val lifecycleOwner = context as? LifecycleOwner
+
+        if (NetworkUtils.isNetworkAvailable(context)) {
+            DatabaseExternal.getRecipe(uid) { recipe ->
+                if (lifecycleOwner?.lifecycle != null) {
+                    lifecycleOwner.lifecycleScope.launch {
+                        val id = db?.recipeDao()?.getRecipeId(recipe.uid)
+                        if (id != null && id.isNotEmpty()) {
+                            db?.recipeDao()?.updateRecipe(
+                                uid = recipe.uid,
+                                name = recipe.name,
+                                description = recipe.description,
+                                ingredients = recipe.ingredients,
+                                equipments = recipe.equipments,
+                                directions = recipe.directions,
+                                previewURL = recipe.previewURL
+                            )
+                        } else if (id == null) {
+                            val item = RecipeEntity(
+                                uid = recipe.uid,
+                                name = recipe.name,
+                                description = recipe.description,
+                                ingredients = recipe.ingredients,
+                                equipments = recipe.equipments,
+                                directions = recipe.directions,
+                                previewURL = recipe.previewURL
+                            )
+
+                            db?.recipeDao()?.insertRecipe(item)
+                        }
+                    }
+                }
+
+                callback(recipe)
+            }
+        } else if (db != null) {
+            if (lifecycleOwner?.lifecycle != null) {
+                lifecycleOwner.lifecycleScope.launch {
+                    val list = db?.recipeDao()?.getRecipe(uid)
+                    if (list != null) {
+                        callback(list[0])
+                    }
+                }
+            }
+        }
+    }
+
     fun getRecipes(context: Context, count: Long, callback: (List<Recipe>) -> Unit) {
         val lifecycleOwner = context as? LifecycleOwner
 
@@ -155,5 +203,9 @@ object Database {
                 }
             }
         }
+    }
+
+    fun setRecipe(recipe: Recipe, callback: (Recipe) -> Unit) {
+        DatabaseExternal.setRecipe(recipe, callback)
     }
 }

@@ -1,5 +1,6 @@
 package com.recep.recep
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
@@ -15,18 +16,13 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import com.recep.recep.recycler.RecipeModifyAdapter
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.recep.recep.data.Recipe
 import com.recep.recep.database.Database
 
 class PublishActivity : AppCompatActivity() {
-    var recipePreviewUri = Uri.EMPTY
-    val pickerImage = registerForActivityResult(PickVisualMedia()) { uri ->
-        if (uri != null) {
-            findViewById<ImageView>(R.id.publishPreviewImage).setImageURI(uri)
-            recipePreviewUri = uri
-        }
-    }
+    private var recipePreviewUri: Uri = Uri.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,15 +48,12 @@ class PublishActivity : AppCompatActivity() {
 
         recipeIngredientList.post {
             recipeIngredientList.layoutManager = LinearLayoutManager(this)
-            recipeIngredientList.adapter = RecipeModifyAdapter("Enter ingredient...")
         }
         recipeEquipmentList.post {
             recipeEquipmentList.layoutManager = LinearLayoutManager(this)
-            recipeEquipmentList.adapter = RecipeModifyAdapter("Enter equipment...")
         }
         recipeDirectionList.post {
             recipeDirectionList.layoutManager = LinearLayoutManager(this)
-            recipeDirectionList.adapter = RecipeModifyAdapter("Enter direction...")
         }
 
         recipeIngredientAdd.setOnClickListener {
@@ -74,12 +67,63 @@ class PublishActivity : AppCompatActivity() {
         }
 
         recipePreviewClick.setOnClickListener {
-            pickerImage.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
+            val pickerIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "image/*"
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivityForResult(pickerIntent, 0)
         }
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.publishTopAppBar)
         topAppBar.setNavigationOnClickListener {
             finish()
+        }
+
+        val recipe = intent.getParcelableExtra<Recipe>("recipe")
+        if (recipe != null && recipe.uid.isNotEmpty()) {
+            updateRecipeMenuSetup(recipe, topAppBar, recipeName, recipeDescription,
+                recipeIngredientList, recipeEquipmentList, recipeDirectionList)
+        } else {
+            newRecipeMenuSetup(topAppBar, recipeName, recipeDescription,
+                recipeIngredientList, recipeEquipmentList, recipeDirectionList)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            val uri = data?.data as Uri
+
+            recipePreviewUri = uri
+            findViewById<ImageView>(R.id.publishPreviewImage).setImageURI(uri)
+        }
+    }
+
+    private fun updateRecipeMenuSetup(recipe: Recipe,
+                                      topAppBar: MaterialToolbar,
+                                      recipeName: TextInputEditText,
+                                      recipeDescription: TextInputEditText,
+                                      recipeIngredientList: RecyclerView,
+                                      recipeEquipmentList: RecyclerView,
+                                      recipeDirectionList: RecyclerView) {
+        topAppBar.title = "Edit Recipe"
+        recipeName.setText(recipe.name)
+        recipeDescription.setText(recipe.description)
+
+        val ingredientList = recipe.ingredients.split("\n")
+        recipeIngredientList.adapter = RecipeModifyAdapter("Enter ingredient", ingredientList.toMutableList())
+
+        val equipmentList = recipe.equipments.split("\n")
+        recipeEquipmentList.adapter = RecipeModifyAdapter("Enter equipment", equipmentList.toMutableList())
+
+        val directionList = recipe.directions.split("\n")
+        recipeDirectionList.adapter = RecipeModifyAdapter("Enter direction", directionList.toMutableList())
+
+        if (recipe.previewURL.length > 5) {
+            Glide.with(this)
+                .load(recipe.previewURL)
+                .into(findViewById<ImageView>(R.id.publishPreviewImage))
         }
 
         topAppBar.setOnMenuItemClickListener { item ->
@@ -89,10 +133,53 @@ class PublishActivity : AppCompatActivity() {
                     val recipeEquipments = (recipeEquipmentList.adapter as RecipeModifyAdapter).getContent()
                     val recipeDirections = (recipeDirectionList.adapter as RecipeModifyAdapter).getContent()
 
+                    checkInputStatus(
+                        recipeName.text.toString(),
+                        recipeDescription.text.toString(),
+                        recipeIngredients,
+                        recipeDirections
+                    ) {
+                        Database.setRecipe(Recipe(
+                            uid = recipe.uid,
+                            name = recipeName.text.toString(),
+                            description = recipeDescription.text.toString(),
+                            ingredients = recipeIngredients,
+                            equipments = recipeEquipments,
+                            directions = recipeDirections,
+                            previewURL = recipe.previewURL
+                        )) { recipe ->
+                            if (recipePreviewUri != Uri.EMPTY) {
+                                Database.uploadRecipePreview(this, recipe, recipePreviewUri)
+                            }
+                            finish()
+                        }
+                    }
+                }
+            }
+            true
+        }
+    }
+
+    private fun newRecipeMenuSetup(topAppBar: MaterialToolbar,
+                              recipeName: TextInputEditText,
+                              recipeDescription: TextInputEditText,
+                              recipeIngredientList: RecyclerView,
+                              recipeEquipmentList: RecyclerView,
+                              recipeDirectionList: RecyclerView) {
+        recipeIngredientList.adapter = RecipeModifyAdapter("Enter ingredient...")
+        recipeEquipmentList.adapter = RecipeModifyAdapter("Enter equipment...")
+        recipeDirectionList.adapter = RecipeModifyAdapter("Enter direction...")
+        topAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.top_menu_item_publish -> {
+                    val recipeIngredients = (recipeIngredientList.adapter as RecipeModifyAdapter).getContent()
+                    val recipeEquipments = (recipeEquipmentList.adapter as RecipeModifyAdapter).getContent()
+                    val recipeDirections = (recipeDirectionList.adapter as RecipeModifyAdapter).getContent()
+
                     checkInputStatus(recipeName.text.toString(),
-                            recipeDescription.text.toString(),
-                            recipeIngredients,
-                            recipeDirections) {
+                        recipeDescription.text.toString(),
+                        recipeIngredients,
+                        recipeDirections) {
                         Database.uploadRecipe(Recipe(
                             uid = "",
                             name = recipeName.text.toString(),
@@ -102,7 +189,9 @@ class PublishActivity : AppCompatActivity() {
                             directions = recipeDirections,
                             previewURL = ""
                         )) { recipe ->
-                            Database.uploadRecipePreview(this, recipe, recipePreviewUri)
+                            if (recipePreviewUri != Uri.EMPTY) {
+                                Database.uploadRecipePreview(this, recipe, recipePreviewUri)
+                            }
                             finish()
                         }
                     }
@@ -120,8 +209,7 @@ class PublishActivity : AppCompatActivity() {
         if (name.isNotEmpty() &&
             description.isNotEmpty() &&
             ingredients.isNotEmpty() &&
-            directions.isNotEmpty() &&
-            recipePreviewUri != Uri.EMPTY) {
+            directions.isNotEmpty()) {
             MaterialAlertDialogBuilder(this)
                 .setIcon(R.drawable.ic_publish)
                 .setTitle("Do you want to publish the recipe?")
