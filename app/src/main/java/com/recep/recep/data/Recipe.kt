@@ -11,5 +11,6 @@ data class Recipe(
     val ingredients: String,
     val equipments: String,
     val directions: String,
-    var previewURL: String
+    var previewURL: String,
+    var isBookmarked: Boolean = false
 ) : Parcelable

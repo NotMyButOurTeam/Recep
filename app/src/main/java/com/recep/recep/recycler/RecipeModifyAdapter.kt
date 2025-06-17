@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.recep.recep.R
 
-class RecipeModifyAdapter(private val hint: String): RecyclerView.Adapter<RecipeModifyAdapter.ListViewHolder>() {
-    var listItem = mutableListOf<String>()
+class RecipeModifyAdapter(private val hint: String, private val listItem: MutableList<String> = mutableListOf<String>()): RecyclerView.Adapter<RecipeModifyAdapter.ListViewHolder>() {
     class ListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var itemNumber: TextView = itemView.findViewById<TextView>(R.id.itemRecipePublishNumber)
         var itemContent: EditText = itemView.findViewById<EditText>(R.id.itemRecipePublishContent)

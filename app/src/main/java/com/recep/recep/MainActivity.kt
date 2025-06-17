@@ -6,11 +6,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.recep.recep.database.Database
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var activeFragment: Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,7 +30,14 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()
         val bookmarksFragment = BookmarksFragment()
 
-        setCurrentFragment(homeFragment)
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.mainFragmentView, homeFragment)
+            add(R.id.mainFragmentView, bookmarksFragment)
+            hide(bookmarksFragment)
+            commit()
+        }
+
+        activeFragment = homeFragment
 
         // Hilangin title app yang ntah kenapa muncul di aplikasi
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -70,8 +79,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCurrentFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.mainFragmentView, fragment)
+            hide(activeFragment)
+            show(fragment)
             commit()
         }
+
+        activeFragment = fragment
     }
 }

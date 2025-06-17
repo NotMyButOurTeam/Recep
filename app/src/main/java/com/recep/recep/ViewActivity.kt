@@ -1,6 +1,7 @@
 package com.recep.recep
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -70,25 +71,23 @@ class ViewActivity : AppCompatActivity() {
         fillList(R.id.viewDirectionList, directionList)
 
         val bookmarkItem = bottomAppBar.menu.findItem(R.id.bottom_menu_item_bookmark)
-        var bookmarkChecked = false
+        Database.getBookmarkStatus(this, recipe) { isBookmarked ->
+            recipe.isBookmarked = isBookmarked
+            updateBookmarkStatus(bookmarkItem, recipe.isBookmarked)
+        }
 
         bottomAppBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.bottom_menu_item_bookmark -> {
-                    bookmarkChecked = !bookmarkChecked
-                    if (bookmarkChecked) {
-                        bookmarkItem.setIcon(R.drawable.ic_bookmark_fill)
-                    } else {
-                        bookmarkItem.setIcon(R.drawable.ic_bookmark_outline)
-                    }
-                    true
+                    recipe.isBookmarked = !recipe.isBookmarked
+                    updateBookmarkStatus(bookmarkItem, recipe.isBookmarked)
+                    Database.setBookmarkStatus(this, recipe, recipe.isBookmarked)
                 }
 
                 R.id.bottom_menu_item_edit -> {
-                    true
                 }
-                else -> true
             }
+            true
         }
     }
 
@@ -96,5 +95,13 @@ class ViewActivity : AppCompatActivity() {
         val view = findViewById<RecyclerView>(id)
         view.layoutManager = LinearLayoutManager(this)
         view.adapter = RecipeListAdapter(list)
+    }
+
+    private fun updateBookmarkStatus(item: MenuItem, checked: Boolean) {
+        if (checked) {
+            item.setIcon(R.drawable.ic_bookmark_fill)
+        } else {
+            item.setIcon(R.drawable.ic_bookmark_outline)
+        }
     }
 }

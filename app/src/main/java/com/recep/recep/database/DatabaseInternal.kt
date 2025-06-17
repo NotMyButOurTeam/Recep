@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -38,7 +39,10 @@ data class RecipeEntity(
     var directions: String = "",
 
     @ColumnInfo(name = "previewURL")
-    var previewURL: String = ""
+    var previewURL: String = "",
+
+    @ColumnInfo(name = "isBookmarked")
+    var isBookmarked: Boolean = false
 ) {
     @Ignore
     constructor() : this(0, "default")
@@ -58,8 +62,14 @@ interface RecipeDao {
     @Query("SELECT id FROM Recipe WHERE uid = :uid")
     suspend fun getRecipeId(uid: String): List<Int>
 
-    @Update
-    suspend fun updateRecipe(recipe: RecipeEntity)
+    @Query("UPDATE Recipe SET name = :name, description = :description, ingredients = :ingredients, equipments = :equipments, directions = :directions, previewURL = :previewURL WHERE uid = :uid")
+    suspend fun updateRecipe(uid: String,
+                             name: String,
+                             description: String,
+                             ingredients: String,
+                             equipments: String,
+                             directions: String,
+                             previewURL: String)
 
     @Query("UPDATE Recipe SET previewURL = :url WHERE uid = :uid")
     suspend fun updateRecipePreview(uid: String, url: String)
@@ -67,8 +77,17 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertRecipe(vararg recipes: RecipeEntity)
 
+    @Query("UPDATE Recipe SET isBookmarked = :isBookmarked WHERE uid = :uid")
+    suspend fun setIsBookmarked(uid: String, isBookmarked: Boolean)
+
+    @Query("SELECT isBookmarked FROM Recipe WHERE uid = :uid")
+    suspend fun getIsBookmarked(uid: String): List<Boolean>
+
+    @Query("SELECT $RECIPE_ATTRIBUTES FROM Recipe WHERE isBookmarked = 1")
+    suspend fun getBookmarkeds(): List<Recipe>
+
     companion object {
-        const val RECIPE_ATTRIBUTES = "uid, name, description, ingredients, equipments, directions, previewURL"
+        const val RECIPE_ATTRIBUTES = "uid, name, description, ingredients, equipments, directions, previewURL, isBookmarked"
     }
 }
 

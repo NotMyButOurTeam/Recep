@@ -29,8 +29,7 @@ object Database {
                         for (recipe in recipes) {
                             val id = db?.recipeDao()?.getRecipeId(recipe.uid)
                             if (id != null && id.isNotEmpty()) {
-                                val item = RecipeEntity(
-                                    id = id[0],
+                                db?.recipeDao()?.updateRecipe(
                                     uid = recipe.uid,
                                     name = recipe.name,
                                     description = recipe.description,
@@ -39,7 +38,6 @@ object Database {
                                     directions = recipe.directions,
                                     previewURL = recipe.previewURL
                                 )
-                                db?.recipeDao()?.updateRecipe(item)
                             } else if (id == null || id?.isEmpty() == true) {
                                 val item = RecipeEntity(
                                     uid = recipe.uid,
@@ -109,5 +107,38 @@ object Database {
 
     fun uploadRecipePreview(context: Context, recipe: Recipe, uri: Uri) {
         DatabaseExternal.setRecipePreview(context, recipe, uri)
+    }
+
+    fun setBookmarkStatus(context: Context, recipe: Recipe, isBookmarked: Boolean) {
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner != null && db != null) {
+            lifecycleOwner.lifecycleScope.launch {
+                db?.recipeDao()?.setIsBookmarked(recipe.uid, isBookmarked)
+            }
+        }
+    }
+
+    fun getBookmarkStatus(context: Context, recipe: Recipe, callback: (Boolean) -> Unit) {
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner != null && db != null) {
+            lifecycleOwner.lifecycleScope.launch {
+                val status = db?.recipeDao()?.getIsBookmarked(recipe.uid)
+                if (status != null && status.isNotEmpty()) {
+                    callback(status[0])
+                }
+            }
+        }
+    }
+
+    fun getBookmarkeds(context: Context, callback: (List<Recipe>) -> Unit) {
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner != null && db != null) {
+            lifecycleOwner.lifecycleScope.launch {
+                val recipes = db?.recipeDao()?.getBookmarkeds()
+                if (recipes != null) {
+                    callback(recipes)
+                }
+            }
+        }
     }
 }

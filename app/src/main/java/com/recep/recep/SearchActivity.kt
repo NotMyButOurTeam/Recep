@@ -27,5 +27,19 @@ class SearchActivity : AppCompatActivity() {
         searchBar.post {
             searchView.show()
         }
+
+        searchView.editText.setOnEditorActionListener { _, _, _ ->
+            searchBar.setText(searchView.text)
+            searchView.hide()
+            false
+        }
+
+        searchView.addTransitionListener { searchView, previousState, newState ->
+            if (newState == SearchView.TransitionState.HIDDEN) {
+                if (searchBar.text.isEmpty()) {
+                    finish()
+                }
+            }
+        }
     }
 }

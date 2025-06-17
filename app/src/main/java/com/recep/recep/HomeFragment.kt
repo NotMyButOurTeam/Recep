@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
             }
 
             searchBar.setOnClickListener {
-                val searchIntent = Intent(requireContext(), SearchActivity::class.java)
+                val searchIntent = Intent(context, SearchActivity::class.java)
                 startActivity(searchIntent)
             }
         }
