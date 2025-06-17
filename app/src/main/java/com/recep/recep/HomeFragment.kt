@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.search.SearchBar
+import com.recep.recep.components.ScreenGridLayoutManager
 import com.recep.recep.database.Database
 import com.recep.recep.recycler.RecipeViewAdapter
 
@@ -37,10 +38,7 @@ class HomeFragment : Fragment() {
         val refreshButton = view.findViewById<MaterialButton>(R.id.homeRefresh)
 
 
-        val screenWidthDp = resources.configuration.screenWidthDp
-        val imageWidthDp = 368
-        val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
-        recipeList.layoutManager = GridLayoutManager(context, columnCount)
+        recipeList.layoutManager = ScreenGridLayoutManager(requireContext(), resources)
 
         loadContentToRecycler(recipeList)
         searchBar.setOnClickListener {

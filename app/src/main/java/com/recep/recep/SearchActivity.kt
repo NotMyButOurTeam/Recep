@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
 import com.google.android.material.textview.MaterialTextView
+import com.recep.recep.components.ScreenGridLayoutManager
 import com.recep.recep.database.Database
 import com.recep.recep.recycler.RecipeViewAdapter
 
@@ -34,10 +34,7 @@ class SearchActivity : AppCompatActivity() {
         val searchNotFound = findViewById<MaterialTextView>(R.id.searchNotFound)
         val searchResult = findViewById<NestedScrollView>(R.id.searchResult)
 
-        val screenWidthDp = resources.configuration.screenWidthDp
-        val imageWidthDp = 368
-        val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
-        recipeList.layoutManager = GridLayoutManager(this, columnCount)
+        recipeList.layoutManager = ScreenGridLayoutManager(this, resources)
 
         searchBar.post {
             searchView.show()

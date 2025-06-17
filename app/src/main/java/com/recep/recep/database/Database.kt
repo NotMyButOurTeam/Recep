@@ -37,7 +37,7 @@ object Database {
                                 directions = recipe.directions,
                                 previewURL = recipe.previewURL
                             )
-                        } else if (id == null) {
+                        } else {
                             val item = RecipeEntity(
                                 uid = recipe.uid,
                                 name = recipe.name,
@@ -86,7 +86,7 @@ object Database {
                                     directions = recipe.directions,
                                     previewURL = recipe.previewURL
                                 )
-                            } else if (id == null) {
+                            } else {
                                 val item = RecipeEntity(
                                     uid = recipe.uid,
                                     name = recipe.name,
@@ -122,7 +122,7 @@ object Database {
             getRecipes(context, count.toLong()) { list ->
                 val mutableList = list.toMutableList()
                 for (item in list) {
-                    if (!item.name.contains(keyword)) {
+                    if (!item.name.lowercase().contains(keyword.lowercase())) {
                         mutableList.remove(item)
                     }
                 }

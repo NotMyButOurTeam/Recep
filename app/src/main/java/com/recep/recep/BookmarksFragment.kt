@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.recep.recep.components.ScreenGridLayoutManager
 import com.recep.recep.database.Database
 import com.recep.recep.recycler.RecipeViewAdapter
 
@@ -29,10 +30,7 @@ class BookmarksFragment : Fragment() {
         val recipeList = view.findViewById<RecyclerView>(R.id.bookmarksRecipeList)
         val toolbar = view.findViewById<MaterialToolbar>(R.id.bookmarksToolbar)
 
-        val screenWidthDp = resources.configuration.screenWidthDp
-        val imageWidthDp = 368
-        val columnCount = maxOf(1, screenWidthDp / imageWidthDp)
-        recipeList.layoutManager = GridLayoutManager(context, columnCount)
+        recipeList.layoutManager = ScreenGridLayoutManager(requireContext(), resources)
 
         loadContentToRecycler(recipeList)
 
