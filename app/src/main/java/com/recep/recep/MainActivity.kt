@@ -2,11 +2,11 @@ package com.recep.recep
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -14,14 +14,23 @@ import com.recep.recep.database.Database
 import com.recep.recep.utils.NetworkUtils
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var activeFragment: Fragment
+    companion object {
+        const val FRAGMENT_HOME = 0
+        const val FRAGMENT_BOOKMARKS = 1
+        const val STATE_FRAGMENT = "previousFragmentId"
+    }
+
+    private var activeFragmentId: Int = FRAGMENT_HOME
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Database.initLocal(this)
-
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        Database.initLocal(this)
+        if (savedInstanceState != null) {
+            activeFragmentId = savedInstanceState.getInt(STATE_FRAGMENT)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -29,17 +38,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val homeFragment = HomeFragment()
-        val bookmarksFragment = BookmarksFragment()
+        val fragments = listOf(
+            HomeFragment(),
+            BookmarksFragment()
+        )
 
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.mainFragmentView, homeFragment)
-            add(R.id.mainFragmentView, bookmarksFragment)
-            hide(bookmarksFragment)
+            for (fragment in fragments) {
+                add(R.id.mainFragmentView, fragment)
+                    .setReorderingAllowed(true)
+                    .disallowAddToBackStack()
+                hide(fragment)
+            }
+            show(fragments[activeFragmentId])
             commit()
         }
-
-        activeFragment = homeFragment
 
         // Hilangin title app yang ntah kenapa muncul di aplikasi
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -69,30 +82,48 @@ class MainActivity : AppCompatActivity() {
                     homeItem?.setIcon(R.drawable.ic_home_fill)
                     bookmarksItem?.setIcon(R.drawable.ic_bookmarks_outline)
 
-                    setCurrentFragment(homeFragment)
-                    true
+                    setCurrentFragment(FRAGMENT_HOME)
                 }
 
                 R.id.bottom_menu_item_bookmarks -> {
                     homeItem?.setIcon(R.drawable.ic_home_outline)
                     bookmarksItem?.setIcon(R.drawable.ic_bookmarks_fill)
 
-                    setCurrentFragment(bookmarksFragment)
-                    true
+                    setCurrentFragment(FRAGMENT_BOOKMARKS)
                 }
-
-                else -> true
             }
+            true
         }
     }
 
-    private fun setCurrentFragment(fragment: androidx.fragment.app.Fragment) {
+    override fun onPause() {
+        if (isChangingConfigurations) {
+            supportFragmentManager.fragments.forEach { fragment ->
+                supportFragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitNowAllowingStateLoss()
+            }
+        }
+
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        outState.putInt(STATE_FRAGMENT, activeFragmentId)
+
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+
+    private fun setCurrentFragment(fragment: Int) {
+        val fragments = supportFragmentManager.fragments
+
         supportFragmentManager.beginTransaction().apply {
-            hide(activeFragment)
-            show(fragment)
+            hide(fragments[activeFragmentId])
+            show(fragments[fragment])
             commit()
         }
 
-        activeFragment = fragment
+        activeFragmentId = fragment
     }
 }

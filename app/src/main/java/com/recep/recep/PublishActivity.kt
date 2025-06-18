@@ -23,6 +23,9 @@ import com.recep.recep.database.Database
 
 class PublishActivity : AppCompatActivity() {
     private var recipePreviewUri: Uri = Uri.EMPTY
+    companion object {
+        const val REQUEST_PICK_IMAGE = 0
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +72,11 @@ class PublishActivity : AppCompatActivity() {
         recipePreviewClick.setOnClickListener {
             val pickerIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "image/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
 
-            startActivityForResult(pickerIntent, 0)
+            startActivityForResult(pickerIntent, REQUEST_PICK_IMAGE)
         }
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.publishTopAppBar)
@@ -92,7 +96,7 @@ class PublishActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK) {
             val uri = data?.data as Uri
 
             recipePreviewUri = uri

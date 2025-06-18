@@ -2,6 +2,7 @@ package com.recep.recep.database
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
@@ -207,5 +208,52 @@ object Database {
 
     fun setRecipe(recipe: Recipe, callback: (Recipe) -> Unit) {
         DatabaseExternal.setRecipe(recipe, callback)
+    }
+
+    fun importBookmark(context: Context, uri: Uri, callback: () -> Unit) {
+        val lifecycleOwner = context as? LifecycleOwner
+            val stream = context.contentResolver.openInputStream(uri)
+            if (stream != null) {
+                val values = String(stream.readBytes())
+                val recipeUids = values.split(" ")
+
+                for (uid in recipeUids) {
+                    DatabaseExternal.getRecipe(uid) { recipe ->
+                        if (lifecycleOwner != null && db != null) {
+                            lifecycleOwner.lifecycleScope.launch {
+                                db?.recipeDao()?.setIsBookmarked(recipe.uid, true)
+                            }
+                        }
+                    }
+                }
+
+                callback()
+            }
+            stream?.close()
+    }
+
+    fun exportBookmark(context: Context, uri: Uri, callback: () -> Unit) {
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner != null && db != null) {
+            lifecycleOwner.lifecycleScope.launch {
+                val recipes = db?.recipeDao()?.getBookmarkeds()
+
+                val stream = context.contentResolver.openOutputStream(uri)
+                if (stream != null && recipes != null) {
+                    var content = ""
+
+                    for (recipe in recipes) {
+                        content += recipe.uid
+                        if (recipes.last() != recipe)
+                            content += " "
+                    }
+
+                    stream.write(content.toByteArray())
+
+                    callback()
+                }
+                stream?.close()
+            }
+        }
     }
 }
