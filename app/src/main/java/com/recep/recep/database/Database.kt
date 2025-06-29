@@ -27,30 +27,7 @@ object Database {
             DatabaseExternal.getRecipe(uid) { recipe ->
                 if (lifecycleOwner?.lifecycle != null) {
                     lifecycleOwner.lifecycleScope.launch {
-                        val id = db?.recipeDao()?.getRecipeId(recipe.uid)
-                        if (id != null && id.isNotEmpty()) {
-                            db?.recipeDao()?.updateRecipe(
-                                uid = recipe.uid,
-                                name = recipe.name,
-                                description = recipe.description,
-                                ingredients = recipe.ingredients,
-                                equipments = recipe.equipments,
-                                directions = recipe.directions,
-                                previewURL = recipe.previewURL
-                            )
-                        } else {
-                            val item = RecipeEntity(
-                                uid = recipe.uid,
-                                name = recipe.name,
-                                description = recipe.description,
-                                ingredients = recipe.ingredients,
-                                equipments = recipe.equipments,
-                                directions = recipe.directions,
-                                previewURL = recipe.previewURL
-                            )
-
-                            db?.recipeDao()?.insertRecipe(item)
-                        }
+                        insertOrUpdateInternalRecipe(recipe)
                     }
                 }
 
@@ -76,30 +53,7 @@ object Database {
                 if (lifecycleOwner?.lifecycle != null) {
                     lifecycleOwner.lifecycleScope.launch {
                         for (recipe in recipes) {
-                            val id = db?.recipeDao()?.getRecipeId(recipe.uid)
-                            if (id != null && id.isNotEmpty()) {
-                                db?.recipeDao()?.updateRecipe(
-                                    uid = recipe.uid,
-                                    name = recipe.name,
-                                    description = recipe.description,
-                                    ingredients = recipe.ingredients,
-                                    equipments = recipe.equipments,
-                                    directions = recipe.directions,
-                                    previewURL = recipe.previewURL
-                                )
-                            } else {
-                                val item = RecipeEntity(
-                                    uid = recipe.uid,
-                                    name = recipe.name,
-                                    description = recipe.description,
-                                    ingredients = recipe.ingredients,
-                                    equipments = recipe.equipments,
-                                    directions = recipe.directions,
-                                    previewURL = recipe.previewURL
-                                )
-
-                                db?.recipeDao()?.insertRecipe(item)
-                            }
+                            insertOrUpdateInternalRecipe(recipe)
                         }
                     }
                 }
@@ -254,6 +208,34 @@ object Database {
                 }
                 stream?.close()
             }
+        }
+    }
+
+    private suspend fun insertOrUpdateInternalRecipe(recipe: Recipe) {
+        val id = db?.recipeDao()?.getRecipeId(recipe.uid)
+
+        if (!id.isNullOrEmpty()) {
+            db?.recipeDao()?.updateRecipe(
+                uid = recipe.uid,
+                name = recipe.name,
+                description = recipe.description,
+                ingredients = recipe.ingredients,
+                equipments = recipe.equipments,
+                directions = recipe.directions,
+                previewURL = recipe.previewURL
+            )
+        } else {
+            val entity = RecipeEntity(
+                uid = recipe.uid,
+                name = recipe.name,
+                description = recipe.description,
+                ingredients = recipe.ingredients,
+                equipments = recipe.equipments,
+                directions = recipe.directions,
+                previewURL = recipe.previewURL
+            )
+
+            db?.recipeDao()?.insertRecipe(entity)
         }
     }
 }
