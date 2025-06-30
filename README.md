@@ -20,7 +20,7 @@ Aplikasi ini dikembangkan sebagai bagian dari tugas besar mata kuliah **Pemrogra
 - Memungkinkan kontribusi resep oleh pengguna sehingga koleksi resep menjadi lebih beragam.
 
 ## 📦 Struktur Proyek
-
+'''
 Recep/
 ├── java/com/recep/recep/
 │ ├── components/ # Komponen turunan Android (custom views)
@@ -31,7 +31,7 @@ Recep/
 │ ├── drawable/ # Icon dan gambar (.xml)
 │ ├── layout/ # Layout tampilan UI (activity_, fragment_, item_)
 │ ├── menu/ # Menu atas (top_) dan bawah (bottom_)
-│ └── values/ # Strings, colors, themes
+│ └── values/ # Strings, colors, themes'''
 
 
 ## 🧩 Tampilan Antarmuka
